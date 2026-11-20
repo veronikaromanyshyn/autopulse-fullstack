@@ -19,8 +19,8 @@ services:
       - key: METRICS_TOKEN
         generateValue: true
       - key: AI_PROVIDER
-        value: gemini
-      - key: GEMINI_API_KEY
+        value: groq
+      - key: GROQ_API_KEY
         sync: false
-      - key: GEMINI_MODEL
-        value: gemini-flash-latest
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile

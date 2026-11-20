@@ -1,5 +1,6 @@
 // Інтеграція з AI API (лабораторна №6). Ключ читається лише на сервері з ENV.
-// AI_PROVIDER=gemini – Google AI (Gemini API), AI_PROVIDER=openai – OpenAI Responses API.
+// AI_PROVIDER=groq – Groq (безкоштовний ключ, модель Llama), gemini – Google AI (Gemini API),
+// openai – OpenAI Responses API.
 
 export function buildInstructions(catalog) {
   const list = catalog
@@ -55,16 +56,37 @@ async function askOpenAI(instructions, question) {
     .map(c => c.text).join('').trim();
 }
 
+async function askGroq(instructions, question) {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+    body: JSON.stringify({
+      model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: instructions },
+        { role: 'user', content: question }
+      ],
+      temperature: 0.4,
+      max_tokens: 500
+    }),
+    signal: AbortSignal.timeout(25000)
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw Object.assign(new Error(data.error?.message || 'Groq error'), { status: res.status });
+  return (data.choices?.[0]?.message?.content || '').trim();
+}
+
+const KEYS = { groq: 'GROQ_API_KEY', gemini: 'GEMINI_API_KEY', openai: 'OPENAI_API_KEY' };
+const ASK = { groq: askGroq, gemini: askGemini, openai: askOpenAI };
+
 export function aiConfigured() {
-  const provider = (process.env.AI_PROVIDER || 'gemini').toLowerCase();
-  return provider === 'openai' ? Boolean(process.env.OPENAI_API_KEY) : Boolean(process.env.GEMINI_API_KEY);
+  const provider = (process.env.AI_PROVIDER || 'groq').toLowerCase();
+  return Boolean(KEYS[provider] && process.env[KEYS[provider]]);
 }
 
 export async function askAssistant(catalog, question) {
-  const provider = (process.env.AI_PROVIDER || 'gemini').toLowerCase();
+  const provider = (process.env.AI_PROVIDER || 'groq').toLowerCase();
   const instructions = buildInstructions(catalog);
-  const answer = provider === 'openai'
-    ? await askOpenAI(instructions, question)
-    : await askGemini(instructions, question);
+  const answer = await ASK[provider](instructions, question);
   return { answer: answer || 'Не вдалося отримати текст відповіді.', provider };
 }

@@ -2,7 +2,7 @@
 
 **Навчальний повностековий вебзастосунок інтернет-магазину автотоварів**, продовження статичного сайту з лабораторної №1.
 
-**Технології:** React 19 + Vite 7, Node.js 22 + Express 5, PostgreSQL, REST API, OpenAPI 3.0.3, Postman, express-session зі сховищем у PostgreSQL, Helmet, express-rate-limit, Render, Gemini API (Google AI) / OpenAI Responses API.
+**Технології:** React 19 + Vite 7, Node.js 22 + Express 5, PostgreSQL, REST API, OpenAPI 3.0.3, Postman, express-session зі сховищем у PostgreSQL, Helmet, express-rate-limit, Render, Groq / Gemini API (Google AI) / OpenAI Responses API.
 
 > Це навчальна демонстрація, а не справжній магазин. Ціни умовні, замовлення не передаються в доставку. Не вводьте реальні персональні дані.
 
@@ -92,7 +92,13 @@ git push -u origin main
 На скриншотах змінних середовища **замаскуйте** секрети.
 
 ## 6. AI-консультант (ЛР6)
-**Варіант A — Gemini (безкоштовний ключ):** https://aistudio.google.com → **Get API key → Create API key**. У `server/.env`:
+**Варіант 0 — Groq (безкоштовно, без картки):** https://console.groq.com/keys → **Create API Key**. У `server/.env` і в Render:
+```env
+AI_PROVIDER=groq
+GROQ_API_KEY=ваш_ключ
+GROQ_MODEL=llama-3.3-70b-versatile
+```
+**Варіант A — Gemini (free tier доступний не для всіх проєктів):** https://aistudio.google.com → **Get API key → Create API key**. У `server/.env`:
 ```env
 AI_PROVIDER=gemini
 GEMINI_API_KEY=ваш_ключ
