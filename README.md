@@ -96,7 +96,7 @@ git push -u origin main
 ```env
 AI_PROVIDER=groq
 GROQ_API_KEY=ваш_ключ
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-120b
 ```
 **Варіант A — Gemini (free tier доступний не для всіх проєктів):** https://aistudio.google.com → **Get API key → Create API key**. У `server/.env`:
 ```env
