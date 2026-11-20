@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: AutoPulse REST API
+  version: 1.0.0
+  description: >
+    Навчальне REST API інтернет-магазину автотоварів AutoPulse.
+    Замовлення є демонстраційними, ціни умовні.
+servers:
+  - url: http://localhost:4000
+    description: Локальний сервер
+  - url: https://autopulse-fullstack.onrender.com
+    description: Render (після деплою)
+tags:
+  - name: System
+  - name: Products
+  - name: Orders
+  - name: AI
+paths:
+  /api/health:
+    get:
+      tags: [System]
+      summary: Перевірка стану сервера та підключення до PostgreSQL
+      responses:
+        '200':
+          description: Сервер і база доступні
+          content:
+            application/json:
+              example: { status: ok, database: connected, service: autopulse }
+        '503':
+          description: База даних недоступна
+  /api/products:
+    get:
+      tags: [Products]
+      summary: Каталог товарів
+      parameters:
+        - in: query
+          name: category
+          required: false
+          schema: { type: string, example: Фільтри }
+      responses:
+        '200':
+          description: Масив товарів
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items: { $ref: '#/components/schemas/Product' }
+  /api/products/{id}:
+    get:
+      tags: [Products]
+      summary: Товар за ідентифікатором
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: Знайдений товар }
+        '404': { description: Товар не знайдено }
+  /api/session:
+    get:
+      tags: [Orders]
+      summary: Стан поточної сесії
+      responses:
+        '200':
+          description: Лічильник відвідувань та кількість замовлень сесії
+          content:
+            application/json:
+              example: { visits: 3, trackedOrders: 1 }
+  /api/orders:
+    post:
+      tags: [Orders]
+      summary: Створити демонстраційне замовлення
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OrderInput' }
+      responses:
+        '201':
+          description: Замовлення збережено
+          content:
+            application/json:
+              example:
+                message: Демонстраційне замовлення збережено.
+                reference: AP-3F9A12C4
+                status: new
+                total_uah: 640
+        '422':
+          description: Дані не пройшли валідацію
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ValidationError' }
+        '429': { description: Перевищено ліміт запитів }
+  /api/orders/mine:
+    get:
+      tags: [Orders]
+      summary: Замовлення поточної сесії
+      responses:
+        '200':
+          description: Масив замовлень, прив'язаних до cookie сесії
+  /api/metrics:
+    get:
+      tags: [System]
+      summary: Метрики продуктивності (потрібен токен)
+      parameters:
+        - { in: header, name: X-Monitor-Token, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Метрики сервісу }
+        '403': { description: Невірний або відсутній токен }
+  /api/ai/consult:
+    post:
+      tags: [AI]
+      summary: Запитання до AI-консультанта
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question]
+              properties:
+                question: { type: string, minLength: 3, maxLength: 500, example: Яку оливу обрати для Skoda Octavia 1.4 TSI? }
+      responses:
+        '200':
+          description: Текстова відповідь консультанта
+          content:
+            application/json:
+              example: { answer: 'Для цього двигуна підійде олива 5W-30 з допуском VW 504/507...' }
+        '422': { description: Некоректне запитання }
+        '502': { description: Помилка зовнішнього AI-сервісу }
+        '503': { description: API-ключ не налаштовано }
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id: { type: integer, example: 3 }
+        slug: { type: string, example: mann-w712-75 }
+        title: { type: string, example: Масляний фільтр W 712/75 }
+        brand: { type: string, example: MANN-FILTER }
+        category: { type: string, example: Фільтри }
+        description: { type: string }
+        price_uah: { type: integer, example: 320 }
+        stock: { type: integer, example: 40 }
+        image_key: { type: string, example: filter }
+    OrderInput:
+      type: object
+      required: [name, phone, productId, quantity, city, delivery]
+      properties:
+        name: { type: string, example: Іван Петренко }
+        phone: { type: string, example: '+380991234567' }
+        productId: { type: integer, example: 3 }
+        quantity: { type: integer, minimum: 1, maximum: 20, example: 2 }
+        city: { type: string, example: Івано-Франківськ }
+        delivery: { type: string, enum: [nova_poshta, ukrposhta, pickup] }
+        vin: { type: string, description: 'Необов’язково, 17 символів', example: WVWZZZ1KZAW123456 }
+        comment: { type: string, maxLength: 500 }
+    ValidationError:
+      type: object
+      properties:
+        error: { type: string, example: Некоректні дані форми. }
+        details:
+          type: object
+          additionalProperties: { type: string }
+          example: { phone: 'Вкажіть коректний телефон (мінімум 10 цифр), напр. +380991234567.' }

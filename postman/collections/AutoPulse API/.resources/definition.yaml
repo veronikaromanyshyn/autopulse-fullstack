@@ -1,0 +1,6 @@
+$kind: collection
+description: Колекція для лабораторних №3–6 (інтернет-магазин автотоварів AutoPulse)
+variables:
+  baseUrl: http://localhost:4000
+  metricsToken: PASTE_METRICS_TOKEN
+  lastReference: ""

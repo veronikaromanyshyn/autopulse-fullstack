@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: 7d456c10-f324-4de5-817e-c4c01a715b3f
+
+localResources:
+  specs:
+    - ../server/openapi.yaml
+
+cloudResources:
+  collections:
+    ../postman/collections/AutoPulse API: 5d9716fd-64f1-4eb6-82f1-0103d80e94e8

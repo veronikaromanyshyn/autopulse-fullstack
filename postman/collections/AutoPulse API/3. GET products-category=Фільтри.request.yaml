@@ -1,0 +1,11 @@
+$kind: http-request
+name: 3. GET products?category=Фільтри
+url: "{{baseUrl}}/api/products?category=Фільтри"
+method: GET
+queryParams:
+  category: Фільтри
+scripts:
+  - type: afterResponse
+    code: pm.test('Лише фільтри', () => pm.response.json().products.forEach(p => pm.expect(p.category).to.eql('Фільтри')));
+    language: text/javascript
+order: 3000

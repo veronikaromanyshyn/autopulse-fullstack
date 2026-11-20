@@ -1,0 +1,19 @@
+$kind: http-request
+name: 9. POST ai/consult
+url: "{{baseUrl}}/api/ai/consult"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "question": "Яку моторну оливу порадите для Skoda Octavia 1.4 TSI 2016 року?"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Статус 200', () => pm.response.to.have.status(200));
+      pm.test('Є текст відповіді', () => pm.expect(pm.response.json().answer).to.be.a('string').and.not.empty);
+    language: text/javascript
+order: 9000

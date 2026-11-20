@@ -1,0 +1,257 @@
+{
+  "info": {
+    "name": "AutoPulse API",
+    "description": "Колекція для лабораторних №3–6 (інтернет-магазин автотоварів AutoPulse)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "metricsToken",
+      "value": "PASTE_METRICS_TOKEN"
+    },
+    {
+      "key": "lastReference",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. GET health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('База підключена', () => pm.expect(pm.response.json().database).to.eql('connected'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. GET products",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/products"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('Каталог містить товари', () => {",
+              "  const { products } = pm.response.json();",
+              "  pm.expect(products).to.be.an('array').that.is.not.empty;",
+              "  pm.expect(products[0]).to.include.keys('id', 'title', 'brand', 'category', 'price_uah');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. GET products?category=Фільтри",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/products?category=Фільтри"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Лише фільтри', () => pm.response.json().products.forEach(p => pm.expect(p.category).to.eql('Фільтри')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. GET session",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/session"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Є лічильник visits', () => pm.expect(pm.response.json()).to.have.property('visits'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. POST orders (коректне)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/orders",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Іван Петренко\",\n  \"phone\": \"+380991234567\",\n  \"productId\": 3,\n  \"quantity\": 2,\n  \"city\": \"Івано-Франківськ\",\n  \"delivery\": \"nova_poshta\",\n  \"vin\": \"WVWZZZ1KZAW123456\",\n  \"comment\": \"Тестове замовлення з Postman\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201', () => pm.response.to.have.status(201));",
+              "pm.test('Отримано reference', () => {",
+              "  const r = pm.response.json().reference;",
+              "  pm.expect(r).to.match(/^AP-/);",
+              "  pm.collectionVariables.set('lastReference', r);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. GET orders/mine",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/orders/mine"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Створене замовлення є в сесії', () => {",
+              "  const refs = pm.response.json().orders.map(o => o.reference);",
+              "  pm.expect(refs).to.include(pm.collectionVariables.get('lastReference'));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. POST orders (некоректне → 422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/orders",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"I1\",\n  \"phone\": \"123\",\n  \"productId\": 3,\n  \"quantity\": 0,\n  \"city\": \"\",\n  \"delivery\": \"drone\",\n  \"vin\": \"ABC\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 422', () => pm.response.to.have.status(422));",
+              "pm.test('Є деталі помилок', () => pm.expect(pm.response.json().details).to.include.keys('name', 'phone', 'quantity'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. GET metrics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Monitor-Token",
+            "value": "{{metricsToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/metrics"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. POST ai/consult",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/ai/consult",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"Яку моторну оливу порадите для Skoda Octavia 1.4 TSI 2016 року?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('Є текст відповіді', () => pm.expect(pm.response.json().answer).to.be.a('string').and.not.empty);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

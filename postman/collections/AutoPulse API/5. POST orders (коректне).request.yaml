@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{baseUrl}}/api/orders"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Іван Петренко",
+      "phone": "+380991234567",
+      "productId": 3,
+      "quantity": 2,
+      "city": "Івано-Франківськ",
+      "delivery": "nova_poshta",
+      "vin": "WVWZZZ1KZAW123456",
+      "comment": "Тестове замовлення з Postman"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Статус 201', () => pm.response.to.have.status(201));
+      pm.test('Отримано reference', () => {
+        const r = pm.response.json().reference;
+        pm.expect(r).to.match(/^AP-/);
+        pm.collectionVariables.set('lastReference', r);
+      });
+    language: text/javascript
+order: 5000

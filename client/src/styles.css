@@ -1,0 +1,145 @@
+:root {
+  --bg: #f4f4f2;
+  --dark: #16181d;
+  --dark-2: #22252c;
+  --accent: #ff5a1f;
+  --accent-2: #ffb020;
+  --text: #2b2d33;
+  --muted: #6b6f78;
+  --line: #dedfe2;
+  --ok: #1f9d55;
+  --err: #c0392b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', Arial, sans-serif; color: var(--text); background: var(--bg); line-height: 1.55; }
+h1, h2, h3 { font-family: 'Oswald', Arial, sans-serif; letter-spacing: .3px; line-height: 1.15; }
+a { color: inherit; }
+.container { width: min(1160px, 100% - 32px); margin: 0 auto; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--accent); margin-bottom: 10px; }
+
+/* Шапка */
+.site-header { position: sticky; top: 0; z-index: 50; background: rgba(22,24,29,.96); color: #fff; backdrop-filter: blur(6px); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+.logo { font-family: 'Oswald', sans-serif; font-size: 24px; text-decoration: none; color: #fff; font-weight: 500; }
+.logo b { color: var(--accent); font-weight: 700; }
+.logo-mark { display: inline-grid; place-items: center; width: 32px; height: 32px; margin-right: 8px; border-radius: 8px; background: var(--accent); font-size: 16px; }
+.nav { display: flex; gap: 26px; }
+.nav a { text-decoration: none; font-size: 14px; font-weight: 500; opacity: .85; }
+.nav a:hover { opacity: 1; color: var(--accent-2); }
+.menu-toggle { display: none; background: none; border: 0; color: #fff; font-size: 26px; cursor: pointer; }
+
+/* Головний блок */
+.hero { background: radial-gradient(circle at 80% 20%, #3a2a24 0, transparent 45%), var(--dark); color: #fff; padding: 90px 0 80px; }
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 50px; align-items: center; }
+.hero h1 { font-size: clamp(34px, 5vw, 58px); margin-bottom: 18px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.lead { font-size: 18px; color: #c9cbd1; max-width: 560px; }
+.hero-actions { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+.hero-card { background: var(--dark-2); border: 1px solid #343842; border-radius: 16px; padding: 26px; }
+.pulse-line svg { width: 100%; height: 80px; fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.hero-card ul { list-style: none; display: grid; gap: 12px; margin-top: 14px; }
+.hero-card li { color: #c9cbd1; }
+.hero-card b { color: #fff; font-size: 22px; margin-right: 8px; font-family: 'Oswald', sans-serif; }
+
+.btn { display: inline-block; padding: 13px 26px; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font: 600 15px 'Inter', sans-serif; text-decoration: none; cursor: pointer; transition: transform .15s, background .15s; }
+.btn:hover { background: #e94b12; transform: translateY(-1px); }
+.btn:disabled { background: #b5b7bd; cursor: not-allowed; transform: none; }
+.btn-ghost { background: transparent; border: 1px solid #5a5e68; }
+.btn-ghost:hover { background: #2c3038; }
+.btn-small { padding: 10px 18px; font-size: 14px; width: 100%; margin-top: 14px; }
+
+.features { background: var(--accent); color: #fff; }
+.features-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; padding: 16px 0; font: 600 13px 'Inter', sans-serif; letter-spacing: 1px; }
+
+/* Секції */
+.section { padding: 80px 0; }
+.section.dark { background: var(--dark); color: #e6e7ea; }
+.section-head { margin-bottom: 30px; }
+.section-head h2, .order-side h2, .assistant-grid h2 { font-size: clamp(28px, 3.5vw, 40px); }
+
+/* Каталог */
+.category-filter { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+.category-btn { padding: 10px 20px; border: 1px solid var(--line); border-radius: 40px; background: #fff; color: var(--text); font: 600 13px 'Inter', sans-serif; cursor: pointer; }
+.category-btn:hover { border-color: var(--accent); }
+.category-btn.active { background: var(--dark); border-color: var(--dark); color: #fff; }
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px; }
+.product-card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s; }
+.product-card:hover { box-shadow: 0 10px 28px rgba(0,0,0,.08); transform: translateY(-2px); }
+.product-art { height: 160px; display: grid; place-items: center; background: #eceded; }
+.product-art svg { width: 150px; height: 130px; fill: none; stroke: var(--dark); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.art-oil { background: #fff1e6; } .art-filter { background: #eef3f8; } .art-brake { background: #f6ecec; }
+.art-battery { background: #eef6ee; } .art-lamp { background: #fff8e1; }
+.product-info { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+.product-meta { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.product-info h3 { font-size: 19px; margin: 6px 0 8px; }
+.product-info p { font-size: 14px; color: var(--muted); flex: 1; }
+.product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+.product-bottom strong { font: 600 22px 'Oswald', sans-serif; color: var(--dark); }
+.stock { font-size: 12px; font-weight: 600; }
+.stock.in { color: var(--ok); } .stock.out { color: var(--err); }
+.feedback { padding: 18px; background: #fff; border-left: 4px solid var(--accent); margin-bottom: 20px; }
+.feedback.error { border-color: var(--err); color: var(--err); }
+
+/* Кроки та FAQ */
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.step { background: var(--dark-2); border: 1px solid #343842; border-radius: 14px; padding: 26px; }
+.step span { font: 700 34px 'Oswald', sans-serif; color: var(--accent); }
+.step h3 { margin: 8px 0; color: #fff; }
+.step p { color: #aeb1b9; font-size: 14px; }
+.faq { margin-top: 36px; display: grid; gap: 10px; }
+.faq details { background: var(--dark-2); border-radius: 10px; padding: 16px 20px; }
+.faq summary { cursor: pointer; font-weight: 600; color: #fff; }
+.faq p { margin-top: 10px; color: #aeb1b9; }
+
+/* Форма замовлення */
+.order-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 50px; }
+.order-side p { color: var(--muted); margin-top: 12px; }
+.visit-counter { font-weight: 700; color: var(--dark) !important; }
+.my-orders { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 18px; }
+.my-orders h3 { font-size: 20px; margin-bottom: 8px; }
+.my-orders p { font-size: 13px; margin-top: 6px; }
+.order-form { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 30px; display: grid; gap: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-field { display: grid; gap: 6px; font-size: 13px; font-weight: 600; }
+.form-field input, .form-field select, .form-field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; font: 14px 'Inter', sans-serif; background: #fafafa; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: 2px solid var(--accent); background: #fff; }
+.form-field small { color: var(--err); font-weight: 500; }
+.order-total { font-size: 16px; } .order-total b { font: 600 22px 'Oswald', sans-serif; color: var(--accent); }
+.demo-note { font-size: 12px; color: var(--muted); }
+.form-status { padding: 14px 16px; border-radius: 8px; font-size: 14px; }
+.form-status.success { background: #e7f6ec; color: #17673a; border: 1px solid #a9dcb9; }
+.form-status.error { background: #fdecea; color: #9a2a1e; border: 1px solid #f0b3aa; }
+
+/* AI-консультант */
+.assistant-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 50px; align-items: start; }
+.assistant-grid > div > p { color: #c3c6cd; margin-top: 12px; }
+.ai-note { font-size: 13px; border-left: 3px solid var(--accent-2); padding-left: 12px; }
+.ai-examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.ai-examples button { background: var(--dark-2); color: #e6e7ea; border: 1px solid #3c404a; border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+.ai-examples button:hover { border-color: var(--accent); }
+.chat-box { background: #fff; color: var(--text); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 470px; }
+.chat-head { background: var(--accent); color: #fff; padding: 14px 18px; font: 600 17px 'Oswald', sans-serif; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; white-space: pre-wrap; }
+.msg.user { align-self: flex-end; background: var(--dark); color: #fff; border-bottom-right-radius: 3px; }
+.msg.bot { align-self: flex-start; background: #f0f1f3; border-bottom-left-radius: 3px; }
+.msg.error { background: #fdecea; color: #9a2a1e; }
+.msg.typing { font-style: italic; color: var(--muted); }
+.chat-form { display: flex; border-top: 1px solid var(--line); }
+.chat-form input { flex: 1; border: 0; padding: 14px 16px; font: 14px 'Inter', sans-serif; outline: none; }
+.chat-form button { border: 0; background: var(--dark); color: #fff; padding: 0 20px; font-weight: 600; cursor: pointer; }
+.chat-form button:disabled { background: #9a9da4; }
+
+.footer { background: #0f1014; color: #9a9da4; padding: 28px 0; font-size: 13px; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+@media (max-width: 860px) {
+  .hero-grid, .order-grid, .assistant-grid, .steps-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .menu-toggle { display: block; }
+  .nav { display: none; position: absolute; top: 66px; left: 0; right: 0; flex-direction: column; gap: 0; background: var(--dark); }
+  .nav.open { display: flex; }
+  .nav a { padding: 14px 20px; border-top: 1px solid #2c3038; }
+}
+@media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } .order-form { padding: 20px; } }

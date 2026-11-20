@@ -1,0 +1,26 @@
+# Render Blueprint для AutoPulse (лабораторна №5).
+# DATABASE_URL та ключ AI вводяться вручну як секрети (sync: false).
+services:
+  - type: web
+    name: autopulse-fullstack
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run db:setup && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: METRICS_TOKEN
+        generateValue: true
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-flash-latest

@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/api/orders"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "I1",
+      "phone": "123",
+      "productId": 3,
+      "quantity": 0,
+      "city": "",
+      "delivery": "drone",
+      "vin": "ABC"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Статус 422', () => pm.response.to.have.status(422));
+      pm.test('Є деталі помилок', () => pm.expect(pm.response.json().details).to.include.keys('name', 'phone', 'quantity'));
+    language: text/javascript
+order: 7000

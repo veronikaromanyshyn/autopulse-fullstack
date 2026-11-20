@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/api/session"
+method: GET
+scripts:
+  - type: afterResponse
+    code: pm.test('Є лічильник visits', () => pm.expect(pm.response.json()).to.have.property('visits'));
+    language: text/javascript
+order: 4000
